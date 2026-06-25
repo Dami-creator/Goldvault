@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <style>
+    body { font-family: Arial; max-width: 500px; margin: 50px auto; padding: 20px; text-align: center; }
+    #balance { font-size: 48px; color: green; margin: 20px 0; }
+    button { padding: 15px 40px; background: red; color: white; border: none; font-size: 20px; border-radius: 8px; cursor: pointer; }
+    #message { margin-top: 20px; color: red; }
+  </style>
+</head>
+<body>
+  <h2>Your Dashboard</h2>
+  <div id="balance">₦250,000.00</div>
+  <p>Available balance</p>
+  <button id="withdrawBtn">💳 Withdraw Now</button>
+  <div id="message"></div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get('userId');
+    if (!userId) window.location.href = '/';
+
+    document.getElementById('withdrawBtn').onclick = async function() {
+      this.disabled = true;
+      this.innerText = 'Processing...';
+      try {
+        const res = await fetch('/api/initiate-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId })
+        });
+        const data = await res.json();
+        if (data.authorization_url) {
+          window.location.href = data.authorization_url;
+        } else {
+          document.getElementById('message').innerText = 'Error: ' + (data.error || 'Unknown error');
+          this.disabled = false;
+          this.innerText = '💳 Withdraw Now';
+        }
+      } catch (err) {
+        document.getElementById('message').innerText = 'Network error. Try again.';
+        this.disabled = false;
+        this.innerText = '💳 Withdraw Now';
+      }
+    };
+  </script>
+</body>
+</html>

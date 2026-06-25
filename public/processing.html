@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Processing</title>
+  <style>
+    body { font-family: Arial; max-width: 400px; margin: 100px auto; text-align: center; }
+    progress { width: 100%; height: 20px; margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <h2>⏳ Validating your payment...</h2>
+  <progress id="prog" value="0" max="100"></progress>
+  <p id="status">Initializing...</p>
+
+  <script>
+    const userId = new URLSearchParams(window.location.search).get('userId');
+    const steps = ['Encrypting data', 'Verifying with NIBSS', 'Generating security code'];
+    let i = 0;
+    const prog = document.getElementById('prog');
+    const status = document.getElementById('status');
+
+    const interval = setInterval(() => {
+      if (i < steps.length) {
+        status.innerText = steps[i];
+        prog.value = (i + 1) * 33;
+        i++;
+      } else {
+        clearInterval(interval);
+        status.innerText = '❌ Error – code generation failed';
+        setTimeout(() => {
+          window.location.href = `/fail?userId=${userId}`;
+        }, 2000);
+      }
+    }, 1500);
+  </script>
+</body>
+</html>

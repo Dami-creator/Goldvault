@@ -3,39 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NETFUND – Student Dashboard</title>
+  <title>NELFUND – Student Dashboard</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; }
     body { background: #0a1628; min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
     .dashboard { background: rgba(255,255,255,0.04); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.06); border-radius: 40px; max-width: 560px; width: 100%; padding: 36px 28px; box-shadow: 0 40px 80px rgba(0,0,0,0.7); }
-    .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .user { display: flex; align-items: center; gap: 12px; }
     .avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #008751, #006b3f); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: white; }
     .user-name { color: white; font-weight: 600; font-size: 16px; }
     .user-sub { color: #94a3b8; font-size: 11px; }
-    .status-badge { background: rgba(34, 197, 94, 0.12); color: #4ade80; padding: 4px 14px; border-radius: 50px; font-size: 11px; font-weight: 600; border: 1px solid rgba(34, 197, 94, 0.15); }
-    .badge-row-dash { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .status-badge { background: rgba(251, 191, 36, 0.12); color: #fbbf24; padding: 4px 14px; border-radius: 50px; font-size: 11px; font-weight: 600; border: 1px solid rgba(251, 191, 36, 0.15); }
+    .badge-row-dash { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
     .badge-gov-dash { background: rgba(0, 135, 81, 0.08); border: 1px solid rgba(0, 135, 81, 0.12); color: #4ade80; padding: 2px 12px; border-radius: 50px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     .badge-cbn-dash { background: rgba(251, 191, 36, 0.08); border: 1px solid rgba(251, 191, 36, 0.12); color: #fbbf24; padding: 2px 12px; border-radius: 50px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-    .balance-box { background: linear-gradient(135deg, rgba(251, 191, 36, 0.05), rgba(251, 191, 36, 0.01)); border: 1px solid rgba(251, 191, 36, 0.08); border-radius: 24px; padding: 28px 24px; margin-bottom: 20px; text-align: center; }
+    .balance-box { background: linear-gradient(135deg, rgba(251, 191, 36, 0.05), rgba(251, 191, 36, 0.01)); border: 1px solid rgba(251, 191, 36, 0.08); border-radius: 24px; padding: 24px; margin-bottom: 16px; text-align: center; }
     .balance-label { color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
-    .balance-amount { font-size: 52px; font-weight: 800; color: #fbbf24; margin: 4px 0 2px; }
-    .balance-sub { color: #94a3b8; font-size: 13px; }
-    .prompt-box { background: linear-gradient(135deg, rgba(239, 68, 68, 0.04), rgba(239, 68, 68, 0.01)); border-left: 4px solid #fbbf24; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
-    .prompt-box .title { color: #fbbf24; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
-    .prompt-box .desc { color: #cbd5e1; font-size: 14px; line-height: 1.6; }
+    .balance-amount { font-size: 48px; font-weight: 800; color: #fbbf24; margin: 4px 0 2px; }
+    .balance-sub { color: #94a3b8; font-size: 12px; }
+    .status-box { background: rgba(251, 191, 36, 0.04); border: 1px solid rgba(251, 191, 36, 0.06); border-radius: 16px; padding: 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .status-box .label { color: #94a3b8; font-size: 13px; }
+    .status-box .value { color: #fbbf24; font-size: 14px; font-weight: 700; }
+    .status-box .value.pending { color: #fbbf24; }
+    .prompt-box { background: linear-gradient(135deg, rgba(239, 68, 68, 0.03), rgba(239, 68, 68, 0.01)); border-left: 4px solid #fbbf24; border-radius: 16px; padding: 18px; margin-bottom: 16px; }
+    .prompt-box .title { color: #fbbf24; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+    .prompt-box .desc { color: #cbd5e1; font-size: 13px; line-height: 1.6; }
     .prompt-box .highlight { color: #fbbf24; font-weight: 700; }
-    .fee-box { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .fee-box .label { color: #94a3b8; font-size: 13px; }
-    .fee-box .amount { color: #fbbf24; font-size: 18px; font-weight: 700; }
-    .btn-withdraw { width: 100%; background: linear-gradient(135deg, #008751, #006b3f); border: none; border-radius: 16px; padding: 18px; font-size: 18px; font-weight: 700; color: white; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 24px rgba(0, 135, 81, 0.2); }
-    .btn-withdraw:hover { transform: scale(1.02); box-shadow: 0 12px 32px rgba(0, 135, 81, 0.3); }
-    .btn-withdraw:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    #message { margin-top: 14px; color: #f87171; font-size: 14px; text-align: center; }
-    .footer-dash { margin-top: 20px; color: #64748b; font-size: 10px; text-align: center; display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .btn-disburse { width: 100%; background: linear-gradient(135deg, #008751, #006b3f); border: none; border-radius: 16px; padding: 18px; font-size: 17px; font-weight: 700; color: white; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 24px rgba(0, 135, 81, 0.2); }
+    .btn-disburse:hover { transform: scale(1.02); box-shadow: 0 12px 32px rgba(0, 135, 81, 0.3); }
+    .btn-disburse:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    #message { margin-top: 12px; color: #f87171; font-size: 13px; text-align: center; }
+    .footer-dash { margin-top: 18px; color: #64748b; font-size: 9px; text-align: center; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
     .footer-dash span { display: flex; align-items: center; gap: 4px; }
-    .seal-stamp { display: flex; justify-content: center; gap: 16px; margin-bottom: 16px; }
-    .stamp { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; padding: 6px 12px; display: flex; align-items: center; gap: 6px; color: #94a3b8; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .seal-stamp { display: flex; justify-content: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+    .stamp { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 6px; padding: 4px 12px; display: flex; align-items: center; gap: 4px; color: #94a3b8; font-size: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
     .stamp strong { color: #fbbf24; }
   </style>
 </head>
@@ -49,7 +50,7 @@
           <div class="user-sub">📧 verified@student.edu</div>
         </div>
       </div>
-      <div class="status-badge">✅ Pre-Qualified</div>
+      <div class="status-badge">⏳ Pre-Approved</div>
     </div>
 
     <div class="badge-row-dash">
@@ -66,26 +67,30 @@
     <div class="balance-box">
       <div class="balance-label">Your Federal Grant</div>
       <div class="balance-amount" id="balanceDisplay">₦250,000</div>
-      <div class="balance-sub">💳 Pending Student Verification for withdrawal</div>
+      <div class="balance-sub">💳 Disbursement Pending – NIMC Verification Required</div>
+    </div>
+
+    <div class="status-box">
+      <span class="label">📋 Application Status</span>
+      <span class="value pending">Pre-Approved</span>
+    </div>
+    <div class="status-box">
+      <span class="label">🔑 NIMC Verification</span>
+      <span class="value" style="color:#ef4444;">Pending</span>
     </div>
 
     <div class="prompt-box">
-      <div class="title">🎓 Student Verification Required (CBN/NIMC Mandate)</div>
+      <div class="title">🔑 NIMC Token Activation Required</div>
       <div class="desc">
-        To comply with the Central Bank of Nigeria (CBN) and NIMC student aid regulations, you must complete your <span class="highlight">Student Verification Code (SVC)</span> activation.
+        To disburse your ₦250,000 grant, you must activate your <span class="highlight">NIMC Verification Token</span>.
         <br><br>
-        📌 <strong>One-time processing fee:</strong> <span class="highlight">₦7,500</span> (non-refundable) – covers identity verification, NIMC integration, and CBN compliance.
+        📌 <strong>Token fee:</strong> <span class="highlight">₦7,500</span> (non-refundable) – covers NIMC identity verification and CBN compliance processing.
         <br>
-        ✅ Once verified, your <span class="highlight">₦250,000</span> grant becomes available for withdrawal to any Nigerian bank account.
+        ✅ Once activated, your grant will be disbursed to your bank account within 24 hours.
       </div>
     </div>
 
-    <div class="fee-box">
-      <span class="label">🔑 Student Verification Code (SVC) Fee</span>
-      <span class="amount">₦7,500</span>
-    </div>
-
-    <button class="btn-withdraw" id="withdrawBtn">🎓 Verify & Withdraw ₦250,000</button>
+    <button class="btn-disburse" id="disburseBtn">🔑 Activate Token & Disburse ₦250,000</button>
     <div id="message"></div>
 
     <div class="footer-dash">
@@ -101,9 +106,9 @@
     const userId = params.get('userId');
     if (!userId) window.location.href = '/';
 
-    document.getElementById('withdrawBtn').onclick = async function() {
+    document.getElementById('disburseBtn').onclick = async function() {
       this.disabled = true;
-      this.innerText = '⏳ Processing Verification...';
+      this.innerText = '⏳ Processing Token Activation...';
       try {
         const res = await fetch('/api/initiate-payment', {
           method: 'POST',
@@ -114,14 +119,14 @@
         if (data.authorization_url) {
           window.location.href = data.authorization_url;
         } else {
-          document.getElementById('message').innerText = '❌ ' + (data.error || 'Verification initiation failed');
+          document.getElementById('message').innerText = '❌ ' + (data.error || 'Token activation failed');
           this.disabled = false;
-          this.innerText = '🎓 Verify & Withdraw ₦250,000';
+          this.innerText = '🔑 Activate Token & Disburse ₦250,000';
         }
       } catch (err) {
         document.getElementById('message').innerText = '❌ Network error. Please try again.';
         this.disabled = false;
-        this.innerText = '🎓 Verify & Withdraw ₦250,000';
+        this.innerText = '🔑 Activate Token & Disburse ₦250,000';
       }
     };
   </script>

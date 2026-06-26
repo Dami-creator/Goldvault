@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard – NELFUND</title>
+  <title>NELFUND – Student Dashboard</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
     body { background: #f0f4f8; min-height: 100vh; padding: 24px; display: flex; justify-content: center; align-items: center; }
@@ -12,8 +12,8 @@
     .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .user { display: flex; align-items: center; gap: 14px; }
     .avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #008751, #006b3f); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; color: white; }
-    .user-name { font-weight: 600; font-size: 16px; color: #0a1628; }
-    .user-sub { font-size: 12px; color: #94a3b8; }
+    .user-name { font-weight: 700; font-size: 18px; color: #0a1628; }
+    .user-sub { font-size: 13px; color: #64748b; }
     .status-badge { background: #fef3c7; color: #b45309; padding: 4px 16px; border-radius: 50px; font-size: 12px; font-weight: 600; }
     .balance-box { background: linear-gradient(135deg, #f0fdf4, #ecfdf3); border: 1px solid #bbf7d0; border-radius: 20px; padding: 24px; text-align: center; margin-bottom: 20px; }
     .balance-box .label { font-size: 13px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -42,7 +42,10 @@
     .seal-stamp { display: flex; justify-content: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
     .stamp { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 4px 14px; display: flex; align-items: center; gap: 4px; color: #64748b; font-size: 9px; text-transform: uppercase; letter-spacing: 0.3px; }
     .stamp strong { color: #008751; }
-    @media (max-width: 480px) { .card { padding: 24px 16px; } .balance-box .amount { font-size: 36px; } .status-grid { grid-template-columns: 1fr; } }
+    .welcome-banner { background: linear-gradient(135deg, #008751, #006b3f); border-radius: 16px; padding: 16px 20px; margin-bottom: 20px; color: white; }
+    .welcome-banner .greeting { font-size: 20px; font-weight: 700; }
+    .welcome-banner .sub-text { font-size: 13px; opacity: 0.8; margin-top: 2px; }
+    @media (max-width: 480px) { .card { padding: 24px 16px; } .balance-box .amount { font-size: 36px; } .status-grid { grid-template-columns: 1fr; } .welcome-banner .greeting { font-size: 17px; } }
   </style>
 </head>
 <body>
@@ -50,13 +53,18 @@
     <div class="card">
       <div class="top-row">
         <div class="user">
-          <div class="avatar">🎓</div>
+          <div class="avatar" id="avatarLetter">🎓</div>
           <div>
             <div class="user-name" id="userName">Student</div>
             <div class="user-sub" id="userEmail">student@edu.ng</div>
           </div>
         </div>
         <div class="status-badge">⏳ Pre-Approved</div>
+      </div>
+
+      <div class="welcome-banner" id="welcomeBanner">
+        <div class="greeting" id="greetingText">Welcome, Student!</div>
+        <div class="sub-text" id="institutionText">Your grant is ready for disbursement</div>
       </div>
 
       <div class="seal-stamp">
@@ -123,13 +131,27 @@
     const userId = params.get('userId');
     if (!userId) window.location.href = '/';
 
-    // Fetch user data
+    // Fetch user data and display name
     fetch(`/api/balance?userId=${userId}`)
       .then(res => res.json())
       .then(data => {
-        if (data.ninFullName) {
-          document.getElementById('userName').textContent = data.ninFullName;
+        // Display user's full name from NIN
+        const displayName = data.ninFullName || data.name || 'Student';
+        document.getElementById('userName').textContent = displayName;
+        document.getElementById('greetingText').textContent = `Welcome, ${displayName}!`;
+        document.getElementById('avatarLetter').textContent = displayName.charAt(0).toUpperCase();
+        
+        // Display email
+        document.getElementById('userEmail').textContent = data.email || 'student@edu.ng';
+        
+        // Display institution and course
+        if (data.institution) {
+          const instText = data.institution === 'other' ? 'Other Institution' : data.institution;
+          document.getElementById('institutionText').textContent = `${instText} • ${data.course || 'Student'}`;
+          document.getElementById('institutionStatus').textContent = data.institution || 'Verified';
         }
+        
+        // Display balance
         document.getElementById('balanceDisplay').textContent = `₦${data.balance.toLocaleString()}`;
       })
       .catch(() => {});

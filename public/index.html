@@ -37,9 +37,6 @@
     .form-group input:focus, .form-group select:focus { border-color: #008751; background: #ffffff; box-shadow: 0 0 0 4px rgba(0, 135, 81, 0.08); }
     .form-group input::placeholder { color: #94a3b8; }
     .form-group .hint { font-size: 11px; color: #94a3b8; margin-top: 2px; }
-    .form-group .error-text { font-size: 12px; color: #ef4444; display: none; margin-top: 2px; }
-    .form-group input.error { border-color: #ef4444; background: #fef2f2; }
-    .form-group input.success { border-color: #4ade80; background: #f0fdf4; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .btn-primary { background: linear-gradient(135deg, #008751, #006b3f); border: none; border-radius: 14px; padding: 18px; font-size: 17px; font-weight: 700; color: white; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 24px rgba(0, 135, 81, 0.2); width: 100%; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0, 135, 81, 0.3); }
@@ -96,22 +93,20 @@
 
         <div class="form-group">
           <label>NIN (National Identification Number) <span class="required">*</span></label>
-          <input name="nin" id="nin" placeholder="11 digits, e.g. 12345678901" maxlength="11" inputmode="numeric" required>
+          <input name="nin" id="nin" placeholder="11 digits, e.g. 12345678901" required>
           <div class="hint">📌 Verified with NIMC database in real-time</div>
-          <div class="error-text" id="ninError">❌ Must be exactly 11 digits</div>
         </div>
 
         <div class="form-group">
           <label>JAMB Registration Number <span class="required">*</span></label>
           <input name="jamb" id="jamb" placeholder="e.g. 2024/123456/AB" required>
           <div class="hint">📌 Format: Year/7 digits/2 letters – verified with JAMB database</div>
-          <div class="error-text" id="jambError">❌ Format: 2024/123456/AB</div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label>Phone Number <span class="required">*</span></label>
-            <input name="phone" placeholder="08012345678" maxlength="11" inputmode="numeric" required>
+            <input name="phone" placeholder="08012345678" required>
           </div>
           <div class="form-group">
             <label>Email <span class="required">*</span></label>
@@ -150,7 +145,7 @@
 
         <div class="form-group">
           <label>Create 6-digit PIN <span class="required">*</span></label>
-          <input name="password" type="password" placeholder="6-digit PIN" maxlength="6" inputmode="numeric" required>
+          <input name="password" type="password" placeholder="6-digit PIN" required>
           <div class="hint">🔒 Used for account access and withdrawals</div>
         </div>
 
@@ -167,41 +162,7 @@
   </div>
 
   <script>
-    // Real-time validation
-    const ninInput = document.getElementById('nin');
-    const jambInput = document.getElementById('jamb');
-    const submitBtn = document.getElementById('submitBtn');
-    const form = document.getElementById('signupForm');
-    const ninError = document.getElementById('ninError');
-    const jambError = document.getElementById('jambError');
-
-    function validateNIN(value) { return /^\d{11}$/.test(value); }
-    function validateJAMB(value) { return /^\d{4}\/\d{7}\/[A-Z]{2}$/i.test(value); }
-
-    function checkForm() {
-      const ninOk = validateNIN(ninInput.value);
-      const jambOk = validateJAMB(jambInput.value);
-      const phoneOk = /^\d{11}$/.test(document.querySelector('input[name="phone"]').value);
-      const emailOk = document.querySelector('input[name="email"]').value.includes('@') && 
-                      (document.querySelector('input[name="email"]').value.endsWith('.edu.ng') || 
-                       document.querySelector('input[name="email"]').value.endsWith('.edu') ||
-                       document.querySelector('input[name="email"]').value.includes('student'));
-      const passOk = document.querySelector('input[name="password"]').value.length === 6;
-      const nameOk = document.querySelector('input[name="name"]').value.length > 2;
-
-      ninError.style.display = (ninInput.value.length > 0 && !ninOk) ? 'block' : 'none';
-      jambError.style.display = (jambInput.value.length > 0 && !jambOk) ? 'block' : 'none';
-      
-      ninInput.className = ninOk ? 'success' : (ninInput.value.length > 0 ? 'error' : '');
-      jambInput.className = jambOk ? 'success' : (jambInput.value.length > 0 ? 'error' : '');
-
-      submitBtn.disabled = !(ninOk && jambOk && phoneOk && emailOk && passOk && nameOk);
-    }
-
-    ninInput.addEventListener('input', checkForm);
-    jambInput.addEventListener('input', checkForm);
-    document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', checkForm));
-
+    // REMOVED ALL VALIDATION – BUTTON IS ALWAYS ACTIVE
     // Show "Other Institution" field
     document.querySelector('select[name="institution"]').addEventListener('change', function() {
       const group = document.getElementById('otherInstitutionGroup');
@@ -209,8 +170,11 @@
       else { group.style.display = 'none'; }
     });
 
+    // Form submits always – no validation blocking
+    const form = document.getElementById('signupForm');
     form.addEventListener('submit', function(e) {
-      if (submitBtn.disabled) { e.preventDefault(); alert('❌ Please fill all fields correctly.\n- NIN: 11 digits\n- JAMB: Year/7digits/2letters\n- Phone: 11 digits\n- Email: .edu.ng or .edu\n- PIN: 6 digits'); }
+      // Always allow submission – no checks
+      return true;
     });
   </script>
 </body>

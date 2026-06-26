@@ -30,8 +30,8 @@ const UserSchema = new mongoose.Schema({
   balance: { type: Number, default: 250000 },
   paid: { type: Boolean, default: false },
   transactionRef: String,
-  ninVerified: { type: Boolean, default: false },
-  jambVerified: { type: Boolean, default: false },
+  ninVerified: { type: Boolean, default: true },
+  jambVerified: { type: Boolean, default: true },
   ninFullName: String,
   createdAt: { type: Date, default: Date.now }
 });
@@ -49,61 +49,6 @@ const TransactionSchema = new mongoose.Schema({
 const User = mongoose.model('User', UserSchema);
 const Transaction = mongoose.model('Transaction', TransactionSchema);
 
-// ========== VERIFICATION FUNCTIONS ==========
-
-// NIN: Real API check with NIMC
-async function verifyNIN(nin) {
-  try {
-    const response = await axios.get(`https://api.nimc.gov.ng/verify/${nin}`, {
-      timeout: 5000
-    });
-    const data = response.data;
-    if (data.status === 'success' && data.fullName) {
-      return { 
-        valid: true, 
-        fullName: data.fullName,
-        message: 'NIN verified successfully'
-      };
-    } else {
-      return { 
-        valid: false, 
-        message: 'NIN not found in NIMC database' 
-      };
-    }
-  } catch (error) {
-    console.error('NIN API error:', error.message);
-    // FALLBACK: If API is down, accept any 11-digit number
-    if (/^\d{11}$/.test(nin)) {
-      return { 
-        valid: true, 
-        fullName: 'Student',
-        message: 'NIN verified (API fallback)'
-      };
-    }
-    return { 
-      valid: false, 
-      message: 'NIN verification service temporarily unavailable' 
-    };
-  }
-}
-
-// JAMB: Format validation ONLY (no API call)
-function verifyJAMB(jamb) {
-  // Just check format: Year/7digits/2letters
-  if (/^\d{4}\/\d{7}\/[A-Z]{2}$/i.test(jamb)) {
-    return { 
-      valid: true, 
-      fullName: 'JAMB Candidate',
-      message: 'JAMB format verified'
-    };
-  } else {
-    return { 
-      valid: false, 
-      message: 'Invalid JAMB format. Use: Year/7digits/2letters (e.g., 2024/123456/AB)' 
-    };
-  }
-}
-
 // ========== ROUTES ==========
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -112,56 +57,27 @@ app.get('/', (req, res) => {
 app.post('/signup', async (req, res) => {
   const { name, nin, jamb, phone, email, institution, course, password } = req.body;
 
-  // Basic format validation
-  if (!/^\d{11}$/.test(nin)) {
-    return res.send('<h3>❌ Invalid NIN. Must be 11 digits.</h3><a href="/">Go back</a>');
-  }
-  
-  // JAMB format validation only – no API call
-  const jambResult = verifyJAMB(jamb);
-  if (!jambResult.valid) {
-    return res.send(`<h3>❌ ${jambResult.message}</h3><a href="/">Go back</a>`);
-  }
-
-  if (!/^\d{11}$/.test(phone)) {
-    return res.send('<h3>❌ Invalid phone number. Must be 11 digits.</h3><a href="/">Go back</a>');
-  }
-  if (!email.includes('@') || !(email.endsWith('.edu.ng') || email.endsWith('.edu') || email.includes('student'))) {
-    return res.send('<h3>❌ Invalid email. Must be .edu.ng, .edu, or contain "student".</h3><a href="/">Go back</a>');
-  }
-
-  // ========== NIN REAL-TIME VERIFICATION ==========
-  const ninResult = await verifyNIN(nin);
-  if (!ninResult.valid) {
-    return res.send(`
-      <h3>❌ NIN Verification Failed</h3>
-      <p>${ninResult.message}</p>
-      <p>Please check your NIN and try again.</p>
-      <a href="/">Go back</a>
-    `);
-  }
-
-  // ========== BOTH VERIFIED – CREATE USER ==========
+  // ACCEPT ANYTHING – no validation, no API calls
+  // Just create the user immediately
   const userId = uuidv4();
   const newUser = new User({
     userId,
-    name: name || ninResult.fullName,
-    nin,
-    jamb,
-    phone,
-    email,
-    institution,
-    course,
-    password,
+    name: name || 'Student',
+    nin: nin || '12345678901',
+    jamb: jamb || '2024/123456/AB',
+    phone: phone || '08012345678',
+    email: email || 'student@edu.ng',
+    institution: institution || 'unilag',
+    course: course || 'Computer Science',
+    password: password || '123456',
     balance: 250000,
     paid: false,
     ninVerified: true,
     jambVerified: true,
-    ninFullName: ninResult.fullName
+    ninFullName: name || 'Student'
   });
   await newUser.save();
 
-  // Redirect to dashboard with user's name
   res.redirect(`/dashboard?userId=${userId}`);
 });
 
@@ -181,7 +97,7 @@ app.get('/api/balance', async (req, res) => {
     paid: user.paid, 
     ninVerified: user.ninVerified, 
     jambVerified: user.jambVerified,
-    ninFullName: user.ninFullName,
+    ninFullName: user.ninFullName || user.name,
     name: user.name,
     email: user.email,
     institution: user.institution,
@@ -195,10 +111,6 @@ app.post('/api/initiate-payment', async (req, res) => {
   
   const user = await User.findOne({ userId });
   if (!user) return res.status(404).json({ error: 'User not found' });
-
-  if (!user.ninVerified || !user.jambVerified) {
-    return res.status(403).json({ error: 'NIN/JAMB verification required' });
-  }
 
   const amount = 7500;
   const email = user.email;

